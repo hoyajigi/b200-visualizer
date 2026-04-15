@@ -3,12 +3,14 @@ import type { GpuModel } from './data/specs'
 import { GPU_SPECS } from './data/specs'
 import { GpuVisualizer } from './components/gpu/GpuVisualizer'
 import { DgxVisualizer } from './components/dgx/DgxVisualizer'
+import { useI18n } from './i18n/context'
 
 type ViewMode = 'gpu' | 'dgx'
 
 function App() {
   const [gpuModel, setGpuModel] = useState<GpuModel>('B200')
   const [viewMode, setViewMode] = useState<ViewMode>('gpu')
+  const { locale, t, setLocale } = useI18n()
 
   return (
     <div className="min-h-screen bg-bg-primary flex flex-col">
@@ -16,7 +18,7 @@ function App() {
         <div className="max-w-[1100px] mx-auto px-8 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <h1 className="text-base font-semibold text-text-primary tracking-tight">
-              Blackwell Visualizer
+              {t.header.title}
             </h1>
             <div className="h-4 w-px bg-border" />
             <span className="text-xs text-text-muted">
@@ -25,6 +27,25 @@ function App() {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Language */}
+            <div className="flex bg-bg-secondary rounded-lg p-[3px] border border-border-subtle">
+              {(['ko', 'en'] as const).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLocale(l)}
+                  className={`
+                    px-2 py-1 text-[10px] rounded-md transition-all duration-150 uppercase
+                    ${locale === l
+                      ? 'bg-bg-hover text-text-primary'
+                      : 'text-text-muted hover:text-text-secondary'}
+                  `}
+                >
+                  {l}
+                </button>
+              ))}
+            </div>
+
+            {/* GPU Model */}
             <div className="flex bg-bg-secondary rounded-lg p-[3px] border border-border-subtle">
               {(['B200', 'B300'] as const).map((model) => (
                 <button
@@ -42,10 +63,11 @@ function App() {
               ))}
             </div>
 
+            {/* View Mode */}
             <div className="flex bg-bg-secondary rounded-lg p-[3px] border border-border-subtle">
               {([
-                { id: 'gpu' as const, label: 'GPU Die' },
-                { id: 'dgx' as const, label: 'DGX Node' },
+                { id: 'gpu' as const, label: t.header.gpuDie },
+                { id: 'dgx' as const, label: t.header.dgxNode },
               ]).map(({ id, label }) => (
                 <button
                   key={id}
@@ -72,7 +94,7 @@ function App() {
 
       <footer className="border-t border-border-subtle">
         <div className="max-w-[1100px] mx-auto px-8 py-4 text-center text-[11px] text-text-muted">
-          Data sourced from NVIDIA Blackwell Architecture documentation
+          {t.footer}
         </div>
       </footer>
     </div>

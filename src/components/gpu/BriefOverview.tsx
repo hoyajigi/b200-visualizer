@@ -1,4 +1,5 @@
 import type { GpuSpec } from '../../data/specs'
+import { useI18n } from '../../i18n/context'
 
 interface BriefOverviewProps {
   readonly spec: GpuSpec
@@ -15,17 +16,19 @@ function Stat({ label, value, sub }: { label: string; value: string; sub?: strin
 }
 
 export function BriefOverview({ spec }: BriefOverviewProps) {
+  const { t } = useI18n()
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-4 gap-3">
-        <Stat label="CUDA Cores" value={spec.cudaCoresTotal.toLocaleString()} sub={`${spec.smsActive} SMs x ${spec.cudaCoresPerSm}`} />
-        <Stat label="Tensor Cores" value={`${spec.tensorCoresTotal}`} sub={spec.tensorCoreGen} />
-        <Stat label="Memory" value={spec.hbmCapacity} sub={`${spec.hbmType} @ ${spec.hbmBandwidth}`} />
-        <Stat label="FP4 Dense" value={spec.fp4Dense} sub="Peak Tensor performance" />
+        <Stat label={t.overview.cudaCores} value={spec.cudaCoresTotal.toLocaleString()} sub={`${spec.smsActive} SMs x ${spec.cudaCoresPerSm}`} />
+        <Stat label={t.overview.tensorCores} value={`${spec.tensorCoresTotal}`} sub={spec.tensorCoreGen} />
+        <Stat label={t.overview.memory} value={spec.hbmCapacity} sub={`${spec.hbmType} @ ${spec.hbmBandwidth}`} />
+        <Stat label="FP4 Dense" value={spec.fp4Dense} sub={t.overview.peakTensor} />
       </div>
 
       <div>
-        <h3 className="text-xs font-medium text-text-muted uppercase tracking-wider mb-4">Architecture Hierarchy</h3>
+        <h3 className="text-xs font-medium text-text-muted uppercase tracking-wider mb-4">{t.overview.architectureHierarchy}</h3>
         <div className="bg-bg-card border border-border rounded-xl p-5">
           <div className="flex items-center justify-between mb-4">
             <span className="text-sm font-medium">{spec.name}</span>
@@ -58,7 +61,7 @@ export function BriefOverview({ spec }: BriefOverviewProps) {
       </div>
 
       <div>
-        <h3 className="text-xs font-medium text-text-muted uppercase tracking-wider mb-4">Key Features</h3>
+        <h3 className="text-xs font-medium text-text-muted uppercase tracking-wider mb-4">{t.overview.keyFeatures}</h3>
         <div className="grid grid-cols-2 gap-2">
           {spec.keyFeatures.map((feature) => (
             <div key={feature} className="bg-bg-card border border-border rounded-lg px-4 py-3 text-xs text-text-secondary">
@@ -69,7 +72,7 @@ export function BriefOverview({ spec }: BriefOverviewProps) {
       </div>
 
       <div>
-        <h3 className="text-xs font-medium text-text-muted uppercase tracking-wider mb-4">Die Interconnect</h3>
+        <h3 className="text-xs font-medium text-text-muted uppercase tracking-wider mb-4">{t.overview.dieInterconnect}</h3>
         <div className="bg-bg-card border border-border rounded-xl p-6 flex items-center justify-center gap-8">
           <div className="bg-bg-secondary border border-gpc-border rounded-lg px-8 py-4 text-center">
             <div className="text-sm font-medium">Die 0</div>

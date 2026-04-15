@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import type { GpuSpec } from '../../data/specs'
+import { useI18n } from '../../i18n/context'
 import { DetailModal } from '../common/DetailDrawer'
-import { unitInfoData } from '../../data/unitInfo'
+import { getUnitInfo } from '../../data/unitInfo'
 import type { UnitKey } from '../../data/unitInfo'
 
 type SelectedComponent =
@@ -106,6 +107,7 @@ function Die({
 }: {
   dieIndex: number; spec: GpuSpec; selected: SelectedComponent; onSelect: (c: SelectedComponent) => void
 }) {
+  const { t } = useI18n()
   const stacksPerDie = spec.hbmStacks / spec.dieCount
   const halfStacks = Math.floor(stacksPerDie / 2)
 
@@ -141,7 +143,7 @@ function Die({
             `}
           >
             <span className="text-[11px] text-accent-amber/70">L2 Cache</span>
-            <span className="text-[10px] text-text-muted ml-2">{spec.l2PartitionsPerDie} partitions</span>
+            <span className="text-[10px] text-text-muted ml-2">{spec.l2PartitionsPerDie} {t.die.partitions}</span>
           </div>
         </div>
 
@@ -159,8 +161,9 @@ function Die({
 
 export function FullDieLayout({ spec }: { readonly spec: GpuSpec }) {
   const [selected, setSelected] = useState<SelectedComponent>(null)
+  const { locale, t } = useI18n()
   const unitKey = getUnitKey(selected)
-  const info = unitKey ? unitInfoData[unitKey] : null
+  const info = unitKey ? getUnitInfo(unitKey, locale) : null
 
   return (
     <>
@@ -230,8 +233,8 @@ export function FullDieLayout({ spec }: { readonly spec: GpuSpec }) {
         {/* Legend */}
         <div className="flex flex-wrap gap-5 justify-center pt-1">
           {[
-            { color: 'bg-accent-green/60', label: 'Active SM' },
-            { color: 'bg-text-muted/15', label: 'Disabled' },
+            { color: 'bg-accent-green/60', label: t.die.activeSm },
+            { color: 'bg-text-muted/15', label: t.die.disabled },
             { color: 'bg-accent-blue/30', label: 'HBM3e' },
             { color: 'bg-accent-amber/30', label: 'L2' },
             { color: 'bg-accent-red/30', label: 'NV-HBI' },

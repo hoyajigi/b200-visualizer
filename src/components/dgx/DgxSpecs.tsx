@@ -1,11 +1,13 @@
 import type { DgxSpec } from '../../data/specs'
 import { DGX_B200_SPEC, DGX_B300_SPEC } from '../../data/specs'
+import { useI18n } from '../../i18n/context'
 
 interface DgxSpecsProps {
   readonly spec: DgxSpec
 }
 
 export function DgxSpecs({ spec }: DgxSpecsProps) {
+  const { t } = useI18n()
   const other = spec.name === 'DGX B200' ? DGX_B300_SPEC : DGX_B200_SPEC
   const isDiff = (a: string | number, b: string | number) => String(a) !== String(b)
 
@@ -14,12 +16,12 @@ export function DgxSpecs({ spec }: DgxSpecsProps) {
     { label: 'GPU Count', value: `${spec.gpuCount}`, compare: `${other.gpuCount}` },
     { label: 'Total GPU Memory', value: spec.totalGpuMemory, compare: other.totalGpuMemory, diff: isDiff(spec.totalGpuMemory, other.totalGpuMemory) },
     { label: 'CPU', value: `${spec.cpuCount}x ${spec.cpuModel}`, compare: `${other.cpuCount}x ${other.cpuModel}` },
-    { label: 'System Memory', value: spec.systemMemory, compare: other.systemMemory },
+    { label: t.dgx.systemMemory, value: spec.systemMemory, compare: other.systemMemory },
     { label: 'NVLink BW per GPU', value: spec.nvlinkBandwidthPerGpu, compare: other.nvlinkBandwidthPerGpu },
     { label: 'NVLink Topology', value: spec.nvlinkTopology, compare: other.nvlinkTopology },
-    { label: 'Network', value: spec.networkBandwidth, compare: other.networkBandwidth, diff: isDiff(spec.networkBandwidth, other.networkBandwidth) },
-    { label: 'Storage', value: spec.storage, compare: other.storage },
-    { label: 'System TDP', value: spec.tdp, compare: other.tdp, diff: isDiff(spec.tdp, other.tdp) },
+    { label: t.dgx.network, value: spec.networkBandwidth, compare: other.networkBandwidth, diff: isDiff(spec.networkBandwidth, other.networkBandwidth) },
+    { label: t.dgx.storage, value: spec.storage, compare: other.storage },
+    { label: `System ${t.specs.tdp}`, value: spec.tdp, compare: other.tdp, diff: isDiff(spec.tdp, other.tdp) },
     { label: 'Form Factor', value: spec.formFactor, compare: other.formFactor },
   ]
 
@@ -30,7 +32,7 @@ export function DgxSpecs({ spec }: DgxSpecsProps) {
       <table className="w-full text-sm">
         <thead>
           <tr className="border-b border-border">
-            <th className="text-left px-4 py-3 text-text-muted font-medium w-[200px]">Specification</th>
+            <th className="text-left px-4 py-3 text-text-muted font-medium w-[200px]">{t.specs.spec}</th>
             <th className="text-left px-4 py-3 text-accent-green font-medium">{spec.name}</th>
             <th className="text-left px-4 py-3 text-text-muted font-medium">{otherName}</th>
           </tr>

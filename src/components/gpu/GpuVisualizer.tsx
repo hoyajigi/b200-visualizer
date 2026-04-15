@@ -1,17 +1,11 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
 import type { GpuSpec } from '../../data/specs'
+import { useI18n } from '../../i18n/context'
 import { TabBar } from '../common/TabBar'
 import { FullDieLayout } from './FullDieLayout'
 import { BriefOverview } from './BriefOverview'
 import { SmDetail } from './SmDetail'
 import { Specifications } from './Specifications'
-
-const TABS = [
-  { id: 'die', label: 'Full Die Layout' },
-  { id: 'overview', label: 'Overview' },
-  { id: 'sm', label: 'SM Detail' },
-  { id: 'specs', label: 'Specifications' },
-] as const
 
 interface GpuVisualizerProps {
   readonly spec: GpuSpec
@@ -19,10 +13,18 @@ interface GpuVisualizerProps {
 
 export function GpuVisualizer({ spec }: GpuVisualizerProps) {
   const [activeTab, setActiveTab] = useState('die')
+  const { t } = useI18n()
+
+  const tabs = useMemo(() => [
+    { id: 'die', label: t.tabs.fullDie },
+    { id: 'overview', label: t.tabs.overview },
+    { id: 'sm', label: t.tabs.smDetail },
+    { id: 'specs', label: t.tabs.specs },
+  ] as const, [t])
 
   return (
     <div className="space-y-4">
-      <TabBar tabs={TABS} activeTab={activeTab} onTabChange={setActiveTab} />
+      <TabBar tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab} />
 
       <div className="min-h-[500px]">
         {activeTab === 'die' && <FullDieLayout spec={spec} />}

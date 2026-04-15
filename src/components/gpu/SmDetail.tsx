@@ -1,4 +1,5 @@
 import type { GpuSpec } from '../../data/specs'
+import { useI18n } from '../../i18n/context'
 
 interface SmDetailProps {
   readonly spec: GpuSpec
@@ -17,11 +18,11 @@ function CoreGrid({ count, color, label }: { count: number; color: string; label
   )
 }
 
-function ProcessingBlock({ index, spec }: { index: number; spec: GpuSpec }) {
+function ProcessingBlock({ index, spec, blockLabel }: { index: number; spec: GpuSpec; blockLabel: string }) {
   return (
     <div className="bg-bg-secondary border border-border rounded-lg p-3">
       <div className="text-xs font-medium text-text-secondary mb-2">
-        Processing Block {index}
+        {blockLabel} {index}
       </div>
 
       <div className="space-y-3">
@@ -75,10 +76,12 @@ function ProcessingBlock({ index, spec }: { index: number; spec: GpuSpec }) {
 }
 
 export function SmDetail({ spec }: SmDetailProps) {
+  const { t } = useI18n()
+
   return (
     <div className="space-y-4">
       <div className="text-sm text-text-secondary">
-        Each {spec.smVersion} Streaming Multiprocessor contains 4 processing blocks
+        {t.sm.smContains}
       </div>
 
       {/* SM Overview */}
@@ -95,20 +98,20 @@ export function SmDetail({ spec }: SmDetailProps) {
         {/* 4 Processing Blocks */}
         <div className="grid grid-cols-2 gap-3 mb-4">
           {Array.from({ length: 4 }, (_, i) => (
-            <ProcessingBlock key={i} index={i} spec={spec} />
+            <ProcessingBlock key={i} index={i} spec={spec} blockLabel={t.sm.processingBlock} />
           ))}
         </div>
 
         {/* Shared Resources */}
         <div className="border-t border-border pt-3 space-y-2">
-          <div className="text-xs font-medium text-text-secondary mb-2">Shared Resources</div>
+          <div className="text-xs font-medium text-text-secondary mb-2">{t.sm.sharedResources}</div>
           <div className="grid grid-cols-3 gap-2">
             <div className="bg-bg-secondary border border-border rounded-md p-2 text-center">
-              <div className="text-[10px] text-text-muted">Register File</div>
+              <div className="text-[10px] text-text-muted">{t.sm.registerFile}</div>
               <div className="text-sm font-mono text-text-primary">{spec.registerFilePerSm}</div>
             </div>
             <div className="bg-bg-secondary border border-border rounded-md p-2 text-center">
-              <div className="text-[10px] text-text-muted">Shared Memory + L1</div>
+              <div className="text-[10px] text-text-muted">{t.sm.sharedMemL1}</div>
               <div className="text-sm font-mono text-text-primary">{spec.sharedMemoryPerSm}</div>
             </div>
             <div className="bg-bg-secondary border border-border rounded-md p-2 text-center">
@@ -122,7 +125,7 @@ export function SmDetail({ spec }: SmDetailProps) {
         <div className="border-t border-border pt-3 mt-3">
           <div className="flex gap-2">
             <div className="bg-bg-secondary border border-border rounded-md p-2 text-center flex-1">
-              <div className="text-[10px] text-text-muted">Texture Units</div>
+              <div className="text-[10px] text-text-muted">{t.sm.textureUnits}</div>
               <div className="text-sm font-mono text-text-primary">4</div>
             </div>
             <div className="bg-bg-secondary border border-border rounded-md p-2 text-center flex-1">
@@ -149,11 +152,11 @@ export function SmDetail({ spec }: SmDetailProps) {
         </div>
         <div className="bg-bg-card border border-border rounded-lg p-3 text-center">
           <div className="text-2xl font-bold text-accent-cyan">4</div>
-          <div className="text-xs text-text-muted">Warp Schedulers</div>
+          <div className="text-xs text-text-muted">{t.sm.warpSchedulers}</div>
         </div>
         <div className="bg-bg-card border border-border rounded-lg p-3 text-center">
           <div className="text-2xl font-bold text-accent-amber">4</div>
-          <div className="text-xs text-text-muted">Dispatch Units</div>
+          <div className="text-xs text-text-muted">{t.sm.dispatchUnits}</div>
         </div>
       </div>
 

@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import type { DgxSpec, GpuModel } from '../../data/specs'
+import { useI18n } from '../../i18n/context'
 import { DetailModal } from '../common/DetailDrawer'
-import { unitInfoData } from '../../data/unitInfo'
+import { getUnitInfo } from '../../data/unitInfo'
 import type { UnitKey } from '../../data/unitInfo'
 
 interface NodeLayoutProps {
@@ -52,8 +53,9 @@ function GpuCard({
 
 export function NodeLayout({ spec }: NodeLayoutProps) {
   const [selected, setSelected] = useState<SelectedNode>(null)
+  const { locale, t } = useI18n()
   const unitKey = getUnitKey(selected)
-  const info = unitKey ? unitInfoData[unitKey] : null
+  const info = unitKey ? getUnitInfo(unitKey, locale) : null
 
   return (
     <>
@@ -138,9 +140,9 @@ export function NodeLayout({ spec }: NodeLayoutProps) {
           {/* System info */}
           <div className="grid grid-cols-3 gap-2">
             {[
-              { label: 'System Memory', value: spec.systemMemory },
-              { label: 'Storage', value: spec.storage },
-              { label: 'Network', value: spec.networkBandwidth },
+              { label: t.dgx.systemMemory, value: spec.systemMemory },
+              { label: t.dgx.storage, value: spec.storage },
+              { label: t.dgx.network, value: spec.networkBandwidth },
             ].map(({ label, value }) => (
               <div key={label} className="bg-bg-card border border-border-subtle rounded-lg p-3 text-center">
                 <div className="text-[10px] text-text-muted">{label}</div>
@@ -154,7 +156,7 @@ export function NodeLayout({ spec }: NodeLayoutProps) {
         <div className="flex items-center justify-center gap-6 text-[11px] text-text-muted py-1">
           {[
             { label: 'GPUs', value: `${spec.gpuCount}x ${spec.gpuModel}` },
-            { label: 'GPU Mem', value: spec.totalGpuMemory },
+            { label: t.dgx.gpuMem, value: spec.totalGpuMemory },
             { label: 'TDP', value: spec.tdp },
           ].map(({ label, value }) => (
             <div key={label} className="flex items-center gap-1.5">
