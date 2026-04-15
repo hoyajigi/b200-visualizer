@@ -127,7 +127,7 @@ function GpcBlock({
 }
 
 function HbmStack({
-  stackIndex, dieIndex, spec, isSelected, onSelect,
+  spec, isSelected, onSelect,
 }: {
   stackIndex: number; dieIndex: number; spec: GpuSpec; isSelected: boolean; onSelect: () => void
 }) {
