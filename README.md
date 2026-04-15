@@ -1,73 +1,36 @@
-# React + TypeScript + Vite
+# Blackwell GPU Visualizer
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+NVIDIA Blackwell (B200 / B300) GPU 아키텍처와 DGX 노드 토폴로지를 인터랙티브하게 탐색하는 웹앱.
 
-Currently, two official plugins are available:
+**Live**: https://hoyajigi.github.io/b200-visualizer/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Views
 
-## React Compiler
+| View | Description |
+|------|-------------|
+| **Full Die Layout** | 듀얼 다이 MCM — GPC, SM, HBM3e, L2, NV-HBI (10 TB/s) |
+| **Overview** | 아키텍처 계층 구조, 주요 수치, Key Features |
+| **SM Detail** | SM100 내부 — Processing Block, Tensor/CUDA Cores, Warp Scheduler |
+| **Specifications** | B200 vs B300 vs H100 스펙 비교 (차이 하이라이트) |
+| **DGX Node** | 8-GPU 노드 토폴로지 — NVSwitch, CPU, Storage |
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Quick Start
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Tech Stack
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+React + TypeScript + Vite + Tailwind CSS 4
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+## Data Sources
+
+- NVIDIA Blackwell Architecture documentation
+- NVIDIA B200/B300/H100 datasheets
+- [Microbenchmarking Blackwell](https://arxiv.org/html/2512.02189v1)
+
+## Inspired by
+
+[CUDA Programming for NVIDIA H100s](https://cudacourseh100.github.io/) — Prateek Shukla
