@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import type { DgxSpec, GpuModel } from '../../data/specs'
-import { GPU_SPECS } from '../../data/specs'
-import { DetailDrawer } from '../common/DetailDrawer'
+import { DetailModal } from '../common/DetailDrawer'
+import { unitInfoData } from '../../data/unitInfo'
+import type { UnitKey } from '../../data/unitInfo'
 
 interface NodeLayoutProps {
   readonly spec: DgxSpec
@@ -14,43 +15,13 @@ type SelectedNode =
   | { type: 'cpu'; index: number }
   | null
 
-function getNodeInfo(s: SelectedNode, spec: DgxSpec, gpuModel: GpuModel) {
+const NODE_KEY_MAP: Record<string, UnitKey> = {
+  gpu: 'gpc', nvswitch: 'nvswitch', cpu: 'cpu',
+}
+
+function getUnitKey(s: SelectedNode): UnitKey | null {
   if (!s) return null
-  const gpu = GPU_SPECS[gpuModel]
-  switch (s.type) {
-    case 'gpu':
-      return {
-        title: `${spec.gpuModel} GPU ${s.index}`, subtitle: gpu.architecture, color: '#22c55e',
-        items: [
-          { label: 'CUDA Cores', value: gpu.cudaCoresTotal.toLocaleString() },
-          { label: 'Tensor Cores', value: `${gpu.tensorCoresTotal} (${gpu.tensorCoreGen})` },
-          { label: 'Memory', value: `${gpu.hbmCapacity} ${gpu.hbmType}` },
-          { label: 'Memory BW', value: gpu.hbmBandwidth },
-          { label: 'NVLink BW', value: spec.nvlinkBandwidthPerGpu },
-          { label: 'FP4 Dense', value: gpu.fp4Dense },
-          { label: 'TDP', value: gpu.tdp },
-        ],
-      }
-    case 'nvswitch':
-      return {
-        title: 'NVSwitch Fabric', subtitle: '5th Gen NVSwitch', color: '#8b5cf6',
-        items: [
-          { label: 'Topology', value: spec.nvlinkTopology },
-          { label: 'Per GPU', value: spec.nvlinkBandwidthPerGpu },
-          { label: 'Aggregate', value: `${parseFloat(spec.nvlinkBandwidthPerGpu) * spec.gpuCount} TB/s` },
-          { label: 'GPUs connected', value: `${spec.gpuCount} all-to-all` },
-        ],
-      }
-    case 'cpu':
-      return {
-        title: `CPU ${s.index}`, subtitle: spec.cpuModel, color: '#3b82f6',
-        items: [
-          { label: 'Model', value: spec.cpuModel },
-          { label: 'System Memory', value: spec.systemMemory },
-          { label: 'Host interface', value: 'PCIe Gen 5' },
-        ],
-      }
-  }
+  return NODE_KEY_MAP[s.type] ?? null
 }
 
 function GpuCard({
@@ -79,9 +50,10 @@ function GpuCard({
   )
 }
 
-export function NodeLayout({ spec, gpuModel }: NodeLayoutProps) {
+export function NodeLayout({ spec }: NodeLayoutProps) {
   const [selected, setSelected] = useState<SelectedNode>(null)
-  const info = getNodeInfo(selected, spec, gpuModel)
+  const unitKey = getUnitKey(selected)
+  const info = unitKey ? unitInfoData[unitKey] : null
 
   return (
     <>
@@ -193,16 +165,7 @@ export function NodeLayout({ spec, gpuModel }: NodeLayoutProps) {
         </div>
       </div>
 
-      {info && (
-        <DetailDrawer
-          isOpen={true}
-          title={info.title}
-          subtitle={info.subtitle}
-          items={info.items}
-          accentColor={info.color}
-          onClose={() => setSelected(null)}
-        />
-      )}
+      <DetailModal info={info} onClose={() => setSelected(null)} />
     </>
   )
 }
